@@ -1,18 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import GameProvider from './GameProvider';
-import './index.css';
-import words from './assets/words.json';
-
-const answer = words.data[Math.floor(Math.random() * words.data.length)];
-
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import GameProvider from "./context/GameProvider";
+import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <GameProvider answer={answer}>
+    <GameProvider>
       <App />
-    </GameProvider >
+    </GameProvider>
   </React.StrictMode>,
-  document.getElementById('root'),
+  document.getElementById("root"),
 );
