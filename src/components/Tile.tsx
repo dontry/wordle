@@ -1,12 +1,13 @@
+import React, { memo } from "react";
 import classNames from "classnames";
-import React from "react";
 
 interface TileProps {
+	index: string;
   status: string;
   children: string;
 }
 
-const Tile: React.FC<TileProps> = ({status, children}) => {
+const Tile: React.FC<TileProps> = ({index, status, children}) => {
   const classes = classNames(
     "w-20 h-20 border-2 inline-flex justify-center items-center text-2xl font-bold capitalize select-none",
     {
@@ -16,7 +17,7 @@ const Tile: React.FC<TileProps> = ({status, children}) => {
     },
   );
 
-  return <div className={classes}> {children}</div>;
+  return <div  className={classes} role="gridcell" data-testid={index}> {children}</div>;
 };
 
-export default React.memo(Tile);
+export default memo(Tile);

@@ -4,7 +4,6 @@ function useKeyListener(callback: (key: string) => void) {
   const [key, setKey] = useState("");
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
-      console.log(e);
       setKey(e.key);
       callback(e.key);
     };

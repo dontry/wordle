@@ -1,8 +1,8 @@
-import React, {Reducer} from "react";
+import React, {Reducer, useReducer} from "react";
 import GameContext, {GameContextProps} from "./GameContext";
 import words from "../assets/words.json";
 
-const wordList = words.data;
+const wordList = words?.data;
 
 interface GameState {
   guesses: string[][];
@@ -28,10 +28,11 @@ const initialState: GameState = {
 const reducer: Reducer<GameState, GameAction> = (state: GameState, action: GameAction) => {
   const {guesses, nextPos, answer} = state;
   const {type, payload} = action;
+	console.log({action, answer, guesses})
   switch (type) {
     case "INPUT_CHARACTER": {
       const {char} = payload!;
-      const newGuesses = [...guesses];
+      const newGuesses = cloneArrays(guesses);
 
       newGuesses[nextPos[0]][nextPos[1]] =
         newGuesses[nextPos[0]][nextPos[1]] === "" ? char : newGuesses[nextPos[0]][nextPos[1]];
@@ -48,7 +49,7 @@ const reducer: Reducer<GameState, GameAction> = (state: GameState, action: GameA
       };
     }
     case "REMOVE_CHARACTER": {
-      const newGuesses = [...guesses];
+      const newGuesses = cloneArrays(guesses);
       let newNextPos = [...nextPos];
       if (!nextPosIsValid(nextPos) && newGuesses[nextPos[0]][4]) {
         newGuesses[nextPos[0]][4] = "";
@@ -111,6 +112,10 @@ function checkEnd(guesses: string[][]) {
   });
 }
 
+function cloneArrays(arrays: any[][]) {
+	return arrays.map((array) => [...array]);
+}
+
 export function checkFilled(row: string[] = []) {
   return row.join("").length === 5;
 }
@@ -119,9 +124,13 @@ export function checkInWordList(row: string[]) {
   return wordList.includes(row.join(""));
 }
 
-const GameProvider: React.FC = () => {
-  const answer = words.data[Math.floor(Math.random() * words.data.length)];
-  const [state, dispatch] = React.useReducer(reducer, {...initialState, answer: answer});
+interface GameProviderProps {
+	answer?: string;
+}
+
+const GameProvider: React.FC<GameProviderProps> = (props) => {
+  const answer = props.answer || words?.data[Math.floor(Math.random() * words.data.length)];
+  const [state, dispatch] = useReducer(reducer, {...initialState, answer: answer});
   const finishedRows = state.guesses.map(
     (row, index) => checkFilled(row) && index < state.nextPos[0],
   );
@@ -135,7 +144,7 @@ const GameProvider: React.FC = () => {
     dispatch,
   };
 
-  return <GameContext.Provider value={context} />;
+  return <GameContext.Provider value={context}>{props.children}</GameContext.Provider>;
 };
 
 export default GameProvider;
