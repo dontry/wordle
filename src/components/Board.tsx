@@ -2,35 +2,37 @@ import { useContext, useState, useRef, useEffect } from 'react';
 import GameContext from '../context/GameContext';
 import { checkFilled, checkInWordList } from '../context/GameProvider';
 import useKeyListener from '../hooks/useKeyListener';
+import { getKeyStatus } from '../lib/utils';
+import { KeyStatus } from '../types';
 import Tile from "./Tile";
 
 
 const Board: React.FC = () => {
 	const { answer, guesses, curRowIndex, finishedRows, dispatch } = useContext(GameContext);
 	const [invalidRowIndex, setInvalidRowIndex] = useState(-1);
-	const curRowIndexRef = useRef(curRowIndex);
-
-	useKeyListener((key: string) => {
-		if (key === "Backspace") {
-			dispatch({ type: "REMOVE_CHARACTER" });
-		} else if (key === "Enter") {
-			if (
-				checkFilled(guesses[curRowIndexRef.current]) &&
-				!checkInWordList(guesses[curRowIndexRef.current])
-			) {
-				alert("not in word list");
-				setInvalidRowIndex(curRowIndexRef.current);
-			} else {
-				dispatch({ type: "ENTER" });
-			}
-		} else if (/^[a-z]{1}$/.test(key)) {
-			dispatch({ type: "INPUT_CHARACTER", payload: { char: key } });
-		}
-	});
+	const callbackRef = useRef((arg: any) => { })
 
 	useEffect(() => {
-		curRowIndexRef.current = curRowIndex;
-	}, [curRowIndex]);
+		callbackRef.current = (key: string) => {
+			if (key === "Backspace") {
+				dispatch({ type: "REMOVE_CHARACTER" });
+			} else if (key === "Enter") {
+				if (
+					checkFilled(guesses[curRowIndex]) &&
+					!checkInWordList(guesses[curRowIndex])
+				) {
+					alert("not in word list");
+					setInvalidRowIndex(curRowIndex);
+				} else {
+					dispatch({ type: "ENTER" });
+				}
+			} else if (/^[a-z]{1}$/.test(key)) {
+				dispatch({ type: "INPUT_CHARACTER", payload: { char: key } });
+			}
+		}
+	}, [curRowIndex, guesses]);
+
+	useKeyListener(callbackRef);
 
 	useEffect(() => {
 		if (invalidRowIndex !== -1) {
@@ -73,16 +75,7 @@ function renderTile(
 	key: string,
 	isFinished: boolean,
 ) {
-	let status = "";
-	if (isFinished) {
-		if (character === answer[colIndex]) {
-			status = "correct";
-		} else if (answer.includes(character) && character !== "") {
-			status = "include";
-		} else if (character !== "") {
-			status = "filled";
-		}
-	}
+	const status: KeyStatus = isFinished ? "empty" : getKeyStatus(character, answer, colIndex);
 	return (
 		<Tile key={key} index={key} status={status}>
 			{character}
@@ -91,3 +84,4 @@ function renderTile(
 }
 
 export default Board;
+

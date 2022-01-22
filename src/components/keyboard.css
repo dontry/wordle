@@ -1,0 +1,16 @@
+.keyboard-row {
+	grid-template-columns: repeat(20, minmax(auto, 20fr));
+	justify-content: stretch;
+}
+
+.keyboard-key {
+	grid-column: span 2;
+}
+
+.keyboard-key[data-key="a"] {
+	grid-column: 2 / span 2;
+}
+
+.keyboard-key[data-key="enter"], .keyboard-key[data-key="⌫"] {
+	grid-column: span 3;
+}

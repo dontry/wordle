@@ -9,11 +9,11 @@ interface TileProps {
 
 const Tile: React.FC<TileProps> = ({index, status, children}) => {
   const classes = classNames(
-    "w-20 h-20 border-2 inline-flex justify-center items-center text-2xl font-bold capitalize select-none",
+    "w-16 h-16 sm:w-20 sm:h-20 border-2 inline-flex justify-center items-center text-2xl md:text-3xl  font-bold capitalize select-none",
     {
       "bg-green-400": status === "correct",
       "bg-yellow-200": status === "include",
-      "bg-slate-300": status === "filled",
+      "bg-slate-300": status === "incorrect",
     },
   );
 

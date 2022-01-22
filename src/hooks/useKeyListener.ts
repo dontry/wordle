@@ -1,17 +1,18 @@
 import {useEffect, useState} from "react";
 
-function useKeyListener(callback: (key: string) => void) {
+function useKeyListener(callbackRef: React.MutableRefObject<(arg: any) => void>) {
   const [key, setKey] = useState("");
+  let listener: (e: KeyboardEvent) => void;
   useEffect(() => {
-    const listener = (e: KeyboardEvent) => {
+     listener = (e: KeyboardEvent) => {
       setKey(e.key);
-      callback(e.key);
+      callbackRef.current(e.key);
     };
     window.addEventListener("keydown", listener);
-    return () => {
-      window.removeEventListener("keydown", listener);
-    };
+    return cleanup;
   }, []);
+
+  const cleanup = () => window.removeEventListener("keydown", listener);
   return key;
 }
 

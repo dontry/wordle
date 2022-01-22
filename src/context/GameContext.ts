@@ -1,20 +1,19 @@
 import {createContext} from "react";
+import { GameState } from './GameProvider';
 
-export interface GameContextProps {
-  guesses: string[][];
-  answer: string;
+export interface GameContextProps extends Omit<GameState, 'nextPos'> {
   curRowIndex: number;
   finishedRows: boolean[];
-  result: string;
   dispatch: React.Dispatch<any>;
 }
 
 const GameContext = createContext<GameContextProps>({
   guesses: [],
   answer: "",
-  result: "",
+  result: "playing",
   curRowIndex: 0,
   finishedRows: [],
+  keyStatuses: {},
   dispatch: () => {},
 });
 
