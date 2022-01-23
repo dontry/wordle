@@ -1,46 +1,43 @@
-import { useContext, useState, useRef, useEffect } from 'react';
+import { useContext, useRef, useEffect } from 'react';
 import GameContext from '../context/GameContext';
-import { checkFilled, checkInWordList } from '../context/GameProvider';
 import useKeyListener from '../hooks/useKeyListener';
-import { getKeyStatus } from '../lib/utils';
-import { KeyStatus } from '../types';
+import { checkFilled, checkInWordList, getKeyStatus, handleKeyPress } from '../lib/utils';
+import { KeyStatus, KeyType } from '../types';
 import Tile from "./Tile";
 
 
 const Board: React.FC = () => {
-	const { answer, guesses, curRowIndex, finishedRows, dispatch } = useContext(GameContext);
-	const [invalidRowIndex, setInvalidRowIndex] = useState(-1);
+	const { answer, guesses, curRowIndex, latestFilledRowIndex, gameStatus, dispatch } = useContext(GameContext);
 	const callbackRef = useRef((arg: any) => { })
 
 	useEffect(() => {
 		callbackRef.current = (key: string) => {
-			if (key === "Backspace") {
-				dispatch({ type: "REMOVE_CHARACTER" });
-			} else if (key === "Enter") {
-				if (
-					checkFilled(guesses[curRowIndex]) &&
-					!checkInWordList(guesses[curRowIndex])
-				) {
-					alert("not in word list");
-					setInvalidRowIndex(curRowIndex);
-				} else {
-					dispatch({ type: "ENTER" });
+			key = key.toLowerCase();
+			handleKeyPress(
+				key as KeyType,
+				guesses,
+				curRowIndex,
+				dispatch,
+				() => {
+					if (
+						checkFilled(guesses[curRowIndex]) &&
+						!checkInWordList(guesses[curRowIndex])
+					) {
+						alert('Not in the word list');
+						dispatch({ type: 'PAUSE' });
+						setTimeout(() => {
+							dispatch({ type: 'RESUME' });
+						}, 500);
+					} else {
+						dispatch({ type: "ENTER" });
+					}
 				}
-			} else if (/^[a-z]{1}$/.test(key)) {
-				dispatch({ type: "INPUT_CHARACTER", payload: { char: key } });
-			}
+			)
 		}
 	}, [curRowIndex, guesses]);
 
 	useKeyListener(callbackRef);
 
-	useEffect(() => {
-		if (invalidRowIndex !== -1) {
-			setTimeout(() => {
-				setInvalidRowIndex(-1);
-			}, 1000);
-		}
-	}, [guesses, invalidRowIndex]);
 
 	return (
 		<div className="grid grid-rows-6 gap-1" role="grid">
@@ -50,15 +47,14 @@ const Board: React.FC = () => {
 						character,
 						answer,
 						colIndex,
-						`${rowIndex}-${colIndex}`,
-						finishedRows[rowIndex],
+						rowIndex <= latestFilledRowIndex,
 					),
 				);
 				return (
 					<div
 						key={rowIndex}
 						className={"row grid grid-cols-5 gap-1"}
-						data-invalid={invalidRowIndex === rowIndex}
+						data-invalid={gameStatus === 'paused' && rowIndex === latestFilledRowIndex + 1}
 					>
 						{tiles}
 					</div>
@@ -72,12 +68,11 @@ function renderTile(
 	character: string,
 	answer: string,
 	colIndex: number,
-	key: string,
 	isFinished: boolean,
 ) {
-	const status: KeyStatus = isFinished ? "empty" : getKeyStatus(character, answer, colIndex);
+	const status: KeyStatus = isFinished ? getKeyStatus(character, answer, colIndex) : "empty";
 	return (
-		<Tile key={key} index={key} status={status}>
+		<Tile key={colIndex} status={status}>
 			{character}
 		</Tile>
 	);

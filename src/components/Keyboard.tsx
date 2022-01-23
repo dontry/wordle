@@ -1,33 +1,50 @@
 import { useContext } from 'react';
-import classNames from 'classnames';
 import GameContext from '../context/GameContext';
-import { KeyStatus } from '../types';
+import { KeyType } from '../types';
 import './keyboard.css';
+import Key from './Key';
+import { checkFilled, checkInWordList, handleKeyPress } from '../lib/utils';
 
-const keyMap = [
+const keyMap: KeyType[][] = [
 	['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
 	['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
 	['enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '⌫']
 ]
 
 const Keyboard = () => {
-	const { keyStatuses } = useContext(GameContext);
+	const { keyStatuses, guesses, curRowIndex, dispatch } = useContext(GameContext);
 	const keyRowClasses = "keyboard-row grid grid-flow-col gap-2 justify-content-stretch";
-	const getKeyClasses = (status: KeyStatus) => classNames(
-		"keyboard-key bg-gray-400 capitalize justify-items-center  text-sm sm:text-md md:text-xl font-semibold rounded h-14 align-center select-none cursor-pointer text-white",
-		{
-			"bg-green-400": status === "correct",
-			"bg-yellow-200": status === "include",
-			"bg-slate-300": status === "incorrect",
-		},
-	);
+
+	const handleClick = (key: string) => {
+		key = key.toLowerCase();
+		handleKeyPress(
+			key as KeyType,
+			guesses,
+			curRowIndex,
+			dispatch,
+			() => {
+				if (
+					checkFilled(guesses[curRowIndex]) &&
+					!checkInWordList(guesses[curRowIndex])
+				) {
+					alert('Not in the word list');
+					dispatch({ type: 'PAUSE' });
+					setTimeout(() => {
+						dispatch({ type: 'RESUME' });
+					}, 500);
+				} else {
+					dispatch({ type: "ENTER" });
+				}
+			}
+		)
+	}
 
 	return (<div className="keyboard grid gap-2 p-3">
 		{keyMap.map((row, i) => {
 			return <div className={keyRowClasses} key={i}>
 				{row.map((key, j) => {
 					const status = keyStatuses[key];
-					return <button className={getKeyClasses(status)} data-key={key} key={j}>{key}</button>
+					return <Key key={key} status={status} char={key} onClick={handleClick} />
 				})}
 			</div>
 		})}

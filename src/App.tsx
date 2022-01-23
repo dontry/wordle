@@ -6,12 +6,12 @@ import "./App.css";
 import Keyboard from './components/Keyboard';
 
 function App() {
-  const { result } = useContext(GameContext);
+  const { gameStatus: result } = useContext(GameContext);
 
   return (
     <div className="App max-w-screen-sm mx-auto grid">
       <header>
-        <h1 className="font-bold uppercase mt-5 text-4xl text-center font-semibold pb-2">Wordle</h1>
+        <h1 className="font-bold uppercase mt-5 text-4xl text-center font-semibold pb-2 select-none">Wordle</h1>
         <hr />
       </header>
       <main className="grid grid-flow-row mt-4">

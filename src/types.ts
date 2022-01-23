@@ -1,5 +1,5 @@
 export type KeyStatus = 'correct' | 'include' | 'incorrect' | 'empty';
-export type Result = 'playing' | 'won' | 'lost';
+export type GameStatus = 'playing' | 'won' | 'lost' | 'paused';
 export type Letter = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k'
 	| 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x'
 	| 'y' | 'z' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K'
@@ -7,3 +7,4 @@ export type Letter = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' |
 	| 'Y' | 'Z';
 
 export type MaybeLetter =  Letter | '';
+export type KeyType = Letter | 'enter' | '⌫' | 'backspace';

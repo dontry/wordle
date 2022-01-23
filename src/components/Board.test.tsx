@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { findByText, getAllByClassName, getAllByRole, getAllByText, render, screen } from '../test/test-utils';
+import { findByText, getAllByClassName, getAllByRole, getAllByText, render } from '../test/test-utils';
 import Board from './Board';
 
 describe('Board', () => {
@@ -44,5 +44,27 @@ describe('Board', () => {
 		const result2 = getAllByText(container, 'a');
 		expect(result1.length).toBe(4);
 		expect(result2.length).toBe(1);
+	})
+
+	test('press keys "apple", then press Enter and the answer is "apple"', async () => {
+		const { container } = render(<Board />, { answer: 'apple' });
+		await userEvent.keyboard('apple[Enter]');
+		const result = getAllByText(container, /[aple]{1}/i);
+		expect(result.every(tile => tile.className.includes('bg-green-400'))).toBeTruthy();
+	})
+
+	test('press keys "bread", then press Enter and the answer is "apple"', async () => {
+		const { container } = render(<Board />, { answer: 'apple' });
+		await userEvent.keyboard('bread[Enter]');
+		const tileB = getAllByText(container, /b/i)
+		const tileR = getAllByText(container, /r/i)
+		const tileA = getAllByText(container, /a/i);
+		const tileE = getAllByText(container, /e/i);
+		const tileD = getAllByText(container, /d/i)
+		expect(tileB[0].className.includes('bg-gray-400')).toBeTruthy();
+		expect(tileR[0].className.includes('bg-gray-400')).toBeTruthy();
+		expect(tileA[0].className.includes('bg-yellow-200')).toBeTruthy();
+		expect(tileE[0].className.includes('bg-yellow-200')).toBeTruthy();
+		expect(tileD[0].className.includes('bg-gray-400')).toBeTruthy();
 	})
 });

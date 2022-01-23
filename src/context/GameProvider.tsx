@@ -1,23 +1,24 @@
 import React, { Reducer, useReducer } from "react";
 import GameContext, { GameContextProps } from "./GameContext";
-import words from "../assets/words.json";
-import { cloneArrays, getNewKeyStatuses } from '../lib/utils';
-import { KeyStatus, Letter, Result, MaybeLetter } from '../types';
+import wordList from "../assets/words";
+import { checkFilled, checkInWordList, cloneArrays, getNewKeyStatuses } from '../lib/utils';
+import { KeyStatus, Letter, GameStatus, MaybeLetter } from '../types';
 
-const wordList = words?.data;
 
 export interface GameState {
   guesses: MaybeLetter[][];
   nextPos: number[];
   answer: string;
-  result: Result;
+  gameStatus: GameStatus;
   keyStatuses: Record<string, KeyStatus>;
 }
 
 interface GameAction {
-  type: "INPUT_CHARACTER" | "REMOVE_CHARACTER" | "ENTER" | "RESET";
+  type: "INPUT_CHARACTER" | "REMOVE_CHARACTER" | "ENTER" | "RESET" | "PAUSE" | "RESUME";
   payload?: {
     char: Letter;
+  } & {
+    status: GameStatus;
   };
 }
 
@@ -26,20 +27,21 @@ const initialState: GameState = {
   nextPos: [0, 0],
   answer: "",
   keyStatuses: {},
-  result: "playing",
+  gameStatus: "playing",
 };
 
 const reducer: Reducer<GameState, GameAction> = (state: GameState, action: GameAction) => {
-  const { guesses, nextPos, answer } = state;
+  const { guesses, nextPos, answer, gameStatus } = state;
   const { type, payload } = action;
-  console.log({ action, answer, guesses })
+  if (gameStatus === 'paused' && type !== 'RESUME' || gameStatus === 'lost' || gameStatus === 'won') {
+    return state;
+  }
   switch (type) {
     case "INPUT_CHARACTER": {
-      const { char } = payload!;
       const newGuesses = cloneArrays<MaybeLetter>(guesses);
 
       newGuesses[nextPos[0]][nextPos[1]] =
-        newGuesses[nextPos[0]][nextPos[1]] === "" ? char : newGuesses[nextPos[0]][nextPos[1]];
+        newGuesses[nextPos[0]][nextPos[1]] === "" ? payload!.char : newGuesses[nextPos[0]][nextPos[1]];
 
       let newNextPos = [...nextPos];
       if (nextPosIsValid(nextPos)) {
@@ -75,14 +77,14 @@ const reducer: Reducer<GameState, GameAction> = (state: GameState, action: GameA
           ...state,
           keyStatuses: newKeyStatuses,
           nextPos: newNextPos,
-          result: "won",
+          gameStatus: "won",
         };
       } else if (checkEnd(guesses)) {
         return {
           ...state,
           keyStatuses: newKeyStatuses,
           nextPos: newNextPos,
-          result: "lost",
+          gameStatus: "lost",
         };
       } else if (checkFilled(guesses[nextPos[0]]) && checkInWordList(guesses[nextPos[0]])) {
         return {
@@ -92,6 +94,18 @@ const reducer: Reducer<GameState, GameAction> = (state: GameState, action: GameA
         };
       } else {
         return state;
+      }
+    }
+    case "PAUSE": {
+      return {
+        ...state,
+        gameStatus: 'paused',
+      }
+    }
+    case "RESUME": {
+      return {
+        ...state,
+        gameStatus: 'playing',
       }
     }
     case "RESET": {
@@ -119,39 +133,24 @@ function checkEnd(guesses: MaybeLetter[][]) {
     return word.length === 5;
   });
 }
-
-
-
-export function checkFilled(row: MaybeLetter[] = []) {
-  return row.join("").length === 5;
-}
-
-export function checkInWordList(row: MaybeLetter[]) {
-  return wordList.includes(row.join(""));
-}
-
 interface GameProviderProps {
   answer?: string;
 }
 
 const GameProvider: React.FC<GameProviderProps> = (props) => {
-  const answer = props.answer || words?.data[Math.floor(Math.random() * words.data.length)];
+  const answer = props.answer || wordList[Math.floor(Math.random() * wordList.length)];
   const [state, dispatch] = useReducer(reducer, { ...initialState, answer: answer });
-  const finishedRows = state.guesses.map(
-    (row, index) => checkFilled(row) && index < state.nextPos[0],
-  );
+  const latestFilledRowIndex = state.nextPos[0] - 1;
 
   const context: GameContextProps = {
     guesses: state.guesses,
     answer: state.answer,
     keyStatuses: state.keyStatuses,
-    result: state.result,
+    gameStatus: state.gameStatus,
     curRowIndex: state.nextPos[0],
-    finishedRows,
+    latestFilledRowIndex,
     dispatch,
   };
-
-  console.log({ context })
 
   return <GameContext.Provider value={context}>{props.children}</GameContext.Provider>;
 };

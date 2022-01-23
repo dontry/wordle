@@ -1,4 +1,6 @@
-import { KeyStatus, MaybeLetter } from '../types';
+import { Dispatch } from 'react';
+import { KeyStatus, KeyType, MaybeLetter } from '../types';
+import wordList from "../assets/words";
 
 export function getKeyStatus(character: string, answer: string, colIndex: number): KeyStatus {
 	if (character === answer[colIndex]) {
@@ -25,5 +27,24 @@ export function getNewKeyStatuses(guesses: MaybeLetter[][], answer: string) {
 }
 
 export function cloneArrays<T>(arrays: T[][]) {
-  return arrays.map((array) => [...array]);
+	return arrays.map((array) => [...array]);
+}
+
+export function checkFilled(row: MaybeLetter[] = []) {
+	return row.join("").length === 5;
+}
+
+
+export function checkInWordList(row: MaybeLetter[]) {
+	return wordList?.includes(row.join(""));
+}
+
+export function handleKeyPress(key: KeyType, guesses: MaybeLetter[][], curRowIndex: number, dispatch: Dispatch<any>, pressEnterCallback?: () => void) {
+	if (key === "backspace" || key === "⌫") {
+		dispatch({ type: "REMOVE_CHARACTER" });
+	} else if (key === "enter") {
+		pressEnterCallback?.();
+	} else if (/^[a-z]{1}$/.test(key)) {
+		dispatch({ type: "INPUT_CHARACTER", payload: { char: key } });
+	}
 }

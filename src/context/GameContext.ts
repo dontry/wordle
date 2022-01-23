@@ -3,16 +3,16 @@ import { GameState } from './GameProvider';
 
 export interface GameContextProps extends Omit<GameState, 'nextPos'> {
   curRowIndex: number;
-  finishedRows: boolean[];
+  latestFilledRowIndex: number;
   dispatch: React.Dispatch<any>;
 }
 
 const GameContext = createContext<GameContextProps>({
   guesses: [],
   answer: "",
-  result: "playing",
+  gameStatus: "playing",
   curRowIndex: 0,
-  finishedRows: [],
+  latestFilledRowIndex: -1,
   keyStatuses: {},
   dispatch: () => {},
 });
