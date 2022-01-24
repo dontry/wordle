@@ -14,6 +14,7 @@
     "release": "standard-version"
   },
   "dependencies": {
+    "@headlessui/react": "^1.4.3",
     "@testing-library/dom": "^8.11.2",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/user-event": "^13.5.0",
