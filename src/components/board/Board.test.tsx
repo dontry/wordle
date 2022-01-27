@@ -6,7 +6,6 @@ describe('Board', () => {
 
   test('renders a 5 * 6 grid', () => {
     const { container } = render(<Board />);
-    // screen.debug();
     const tiles = getAllByRole(container, 'gridcell');
     const rows = getAllByClassName(container, 'row');
     expect(tiles.length).toBe(30);

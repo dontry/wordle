@@ -9,7 +9,7 @@ interface DialogProps {
   onClose: () => void;
 }
 
-const Dialog: React.FC<DialogProps> = ({ title, description, open = false, onClose, children }) => {
+export const Dialog: React.FC<DialogProps> = ({ title, description, open = false, onClose, children }) => {
   return <Transition appear show={open} as={Fragment}>
     <HSDialog as="div" className="fixed inset-0 z-10 overflow-y-auto" open={open} onClose={onClose}>
       <div className="min-h-screen px-4 text-center grid content-center items-center">

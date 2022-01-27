@@ -1,6 +1,10 @@
 {
   "**/*.{js,jsx,ts,tsx}": [
     "prettier --write",
-    "eslint --fix",
+    "eslint --fix"
   ],
+  "**/*.{ts,tsx}": [
+    "tsc --noEmit",
+    "jest"
+  ]
 }
