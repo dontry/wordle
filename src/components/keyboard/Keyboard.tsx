@@ -1,9 +1,9 @@
 import { useCallback, useContext } from 'react';
-import GameContext from '../context/GameContext';
-import { KeyType } from '../types';
+import GameContext from '../../context/GameContext';
+import { KeyType } from '../../types';
+import { checkFilled, checkInWordList, handleKeyPress } from '../../lib/utils';
 import './keyboard.css';
-import Key from './Key';
-import { checkFilled, checkInWordList, handleKeyPress } from '../lib/utils';
+import KeyButton from './KeyButton';
 
 const keyMap: KeyType[][] = [
   ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
@@ -54,7 +54,7 @@ const Keyboard = () => {
         {row.map((key, j) => {
           const status = keyStatuses[key] || 'empty';
           const handleClick = key === 'enter' ? handleEnterKeyClick : handleKeyClick;
-          return <Key key={key} status={status} char={key} onClick={handleClick} />
+          return <KeyButton key={key} status={status} char={key} onClick={handleClick} />
         })}
       </div>
     })}
