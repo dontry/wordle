@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { queryHelpers, render as rtlRender } from '@testing-library/react'
-import GameProvider from '../context/GameProvider';
+import GameProvider, { GameState } from '../context/GameProvider';
 
-function render(ui: React.ReactElement, option?: { answer?: string }) {
-	const Wrapper: React.FC = ({ children }) => (<GameProvider answer={option?.answer}>{children}</GameProvider>)
+function render(ui: React.ReactElement, option?: { defaultState?: Partial<GameState> }) {
+	const Wrapper: React.FC = ({ children }) => (<GameProvider defaultState={option?.defaultState}>{children}</GameProvider>)
 
 	return rtlRender(ui, { wrapper: Wrapper })
 }
@@ -20,8 +20,6 @@ function getAllByClassName(container: HTMLElement, className: string) {
 	}
 	return elements;
 }
-
-
 
 export * from '@testing-library/react';
 export { render, queryAllByClassName, getAllByClassName };

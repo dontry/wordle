@@ -1,8 +1,9 @@
-import React, { Reducer, useReducer } from "react";
+import React, { Reducer } from "react";
 import GameContext, { GameContextProps } from "./GameContext";
 import wordList from "../assets/words";
 import { checkFilled, checkInWordList, cloneArrays, getNewKeyStatuses } from '../lib/utils';
 import { KeyStatus, Letter, GameStatus, MaybeLetter } from '../types';
+import useStateStorage from '../hooks/useStorage';
 
 
 export interface GameState {
@@ -33,7 +34,8 @@ const initialState: GameState = {
 const reducer: Reducer<GameState, GameAction> = (state: GameState, action: GameAction) => {
   const { guesses, nextPos, answer, gameStatus } = state;
   const { type, payload } = action;
-  if (gameStatus === 'paused' && type !== 'RESUME' || gameStatus === 'lost' || gameStatus === 'won') {
+  if ((gameStatus === 'paused' || gameStatus === 'lost' || gameStatus === 'won')
+    && (type !== 'RESUME' && type !== 'RESET')) {
     return state;
   }
   switch (type) {
@@ -109,7 +111,11 @@ const reducer: Reducer<GameState, GameAction> = (state: GameState, action: GameA
       }
     }
     case "RESET": {
-      return initialState;
+      const answer = wordList[Math.floor(Math.random() * wordList.length)];
+      return {
+        ...initialState,
+        answer,
+      };
     }
     default:
       return state;
@@ -134,20 +140,20 @@ function checkEnd(guesses: MaybeLetter[][]) {
   });
 }
 interface GameProviderProps {
-  answer?: string;
+  defaultState?: Partial<GameState>
 }
 
 const GameProvider: React.FC<GameProviderProps> = (props) => {
-  const answer = props.answer || wordList[Math.floor(Math.random() * wordList.length)];
-  const [state, dispatch] = useReducer(reducer, { ...initialState, answer: answer });
-  const latestFilledRowIndex = state.nextPos[0] - 1;
-
+  const answer = props.defaultState?.answer || wordList[Math.floor(Math.random() * wordList.length)];
+  const initialGameState = { ...initialState, ...props.defaultState, answer };
+  const [gameState, dispatch] = useStateStorage('gameState', initialGameState, reducer);
+  const latestFilledRowIndex = gameState.nextPos[0] - 1;
   const context: GameContextProps = {
-    guesses: state.guesses,
-    answer: state.answer,
-    keyStatuses: state.keyStatuses,
-    gameStatus: state.gameStatus,
-    curRowIndex: state.nextPos[0],
+    guesses: gameState.guesses,
+    answer: gameState.answer,
+    keyStatuses: gameState.keyStatuses,
+    gameStatus: gameState.gameStatus,
+    curRowIndex: gameState.nextPos[0],
     latestFilledRowIndex,
     dispatch,
   };
