@@ -10,7 +10,7 @@ import { checkFilled, getKeyStatus } from './lib/utils';
 import { StatusEmoji } from './constants';
 
 function App() {
-  const { gameStatus, answer, dispatch, guesses } = useContext(GameContext);
+  const { gameStatus, answer, guesses, dispatch } = useContext(GameContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const resultRef = useRef(gameStatus);
   const dialogClasses = classNames(
@@ -70,7 +70,7 @@ function App() {
           <Keyboard />
         </section>
         <Dialog open={dialogOpen} onClose={handleClose}>
-          <div className="grid justify-center items-center">
+          <div data-testid="dialog" className="grid justify-center items-center">
             <h1 className={dialogClasses}>{`You ${resultRef.current}!`}</h1>
             {resultRef.current === 'lost' && <p className='mt-3 text-center'>The answer is {answer}.</p>}
             <div className="flex gap-4 content-center" >

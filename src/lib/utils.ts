@@ -48,3 +48,7 @@ export function handleKeyPress(key: KeyType, guesses: MaybeLetter[][], curRowInd
 		dispatch({ type: "INPUT_CHARACTER", payload: { char: key } });
 	}
 }
+
+export function initializeGuesses(): MaybeLetter[][] {
+  return Array.from({ length: 6 }, (_, i) => Array.from({ length: 5 }, (_, j) => ""));
+}

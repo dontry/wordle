@@ -1,7 +1,7 @@
 import React, { Reducer } from "react";
 import GameContext, { GameContextProps } from "./GameContext";
 import wordList from "../assets/words";
-import { checkFilled, checkInWordList, cloneArrays, getNewKeyStatuses } from '../lib/utils';
+import { checkFilled, checkInWordList, cloneArrays, getNewKeyStatuses, initializeGuesses } from '../lib/utils';
 import { KeyStatus, Letter, GameStatus, MaybeLetter } from '../types';
 import useStateStorage from '../hooks/useStorage';
 
@@ -24,7 +24,7 @@ interface GameAction {
 }
 
 const initialState: GameState = {
-  guesses: Array.from({ length: 6 }, (_, i) => Array.from({ length: 5 }, (_, j) => "")),
+  guesses: initializeGuesses(),
   nextPos: [0, 0],
   answer: "",
   keyStatuses: {},
