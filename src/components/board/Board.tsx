@@ -1,10 +1,10 @@
-import { useContext, useRef, useEffect, useState } from 'react';
-import GameContext from '../context/GameContext';
-import useKeyListener from '../hooks/useKeyListener';
-import { checkFilled, checkInWordList, getKeyStatus, handleKeyPress } from '../lib/utils';
-import { KeyStatus, KeyType } from '../types';
-import Dialog from './Dialog';
-import Tile from "./Tile";
+import React, { useContext, useRef, useEffect, useState, MouseEventHandler } from 'react';
+import GameContext from '../../context/GameContext';
+import useKeyListener from '../../hooks/useKeyListener';
+import { checkFilled, checkInWordList, getKeyStatus, handleKeyPress } from '../../lib/utils';
+import { KeyStatus, KeyType } from '../../types';
+import Dialog from '../Dialog';
+import Tile from './Tile';
 
 
 const Board: React.FC = () => {
