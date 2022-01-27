@@ -9,7 +9,9 @@
     "ts-check": "tsc --project tsconfig.json --pretty --noEmit",
     "format": "prettier \"**/*.+(js|json|less|css|html|ts|tsx|md)\" --write",
     "lint": "eslint --ext ts,tsx src",
-    "test": "jest",
+    "test": "is-ci \"test:coverage\" \"test:watch\"",
+    "test:coverage": "jest --ci --coverage",
+    "test:watch": "jest --watch",
     "prepare": "husky install",
     "release": "standard-version"
   },
@@ -39,6 +41,7 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "husky": "^7.0.4",
+    "is-ci-cli": "^2.2.0",
     "jest": "^27.4.7",
     "jest-watch-typeahead": "^1.0.0",
     "lint-staged": "^12.2.2",
