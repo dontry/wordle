@@ -14,16 +14,14 @@ export interface GameState {
   keyStatuses: Record<string, KeyStatus>;
 }
 
-interface GameAction {
-  type: "INPUT_CHARACTER" | "REMOVE_CHARACTER" | "ENTER" | "RESET" | "PAUSE" | "RESUME";
+export interface GameAction {
+  type: "INPUT_CHARACTER" | "BACKSPACE" | "ENTER" | "RESET" | "PAUSE" | "RESUME";
   payload?: {
     char: Letter;
-  } & {
-    status: GameStatus;
-  };
+  }
 }
 
-const initialState: GameState = {
+export const initialState: GameState = {
   guesses: initializeGuesses(),
   nextPos: [0, 0],
   answer: "",
@@ -31,7 +29,7 @@ const initialState: GameState = {
   gameStatus: "playing",
 };
 
-const reducer: Reducer<GameState, GameAction> = (state: GameState, action: GameAction) => {
+export const reducer: Reducer<GameState, GameAction> = (state: GameState, action: GameAction) => {
   const { guesses, nextPos, answer, gameStatus } = state;
   const { type, payload } = action;
   if ((gameStatus === 'paused' || gameStatus === 'lost' || gameStatus === 'won')
@@ -56,7 +54,7 @@ const reducer: Reducer<GameState, GameAction> = (state: GameState, action: GameA
         nextPos: newNextPos,
       };
     }
-    case "REMOVE_CHARACTER": {
+    case "BACKSPACE": {
       const newGuesses = cloneArrays<MaybeLetter>(guesses);
       let newNextPos = [...nextPos];
       if (!nextPosIsValid(nextPos) && newGuesses[nextPos[0]][4]) {
