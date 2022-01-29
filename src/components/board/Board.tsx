@@ -1,11 +1,11 @@
-import React, { useContext, useRef, useEffect, useState, MouseEventHandler } from 'react';
+import React, { useContext, useRef, useEffect, useState } from 'react';
 import GameContext from '../../context/GameContext';
 import useKeyListener from '../../hooks/useKeyListener';
 import { checkFilled, checkInWordList, getKeyStatus, handleKeyPress } from '../../lib/utils';
 import { KeyStatus, KeyType } from '../../types';
 import Dialog from '../Dialog';
 import Tile from './Tile';
-
+import './board.css';
 
 const Board: React.FC = () => {
   const { answer, guesses, curRowIndex, latestFilledRowIndex, gameStatus, dispatch } = useContext(GameContext);
@@ -49,8 +49,8 @@ const Board: React.FC = () => {
   }
 
   return (
-    <>
-      <div className="grid grid-rows-6 gap-1" role="grid">
+    <div className='board-container h-0 relative'>
+      <div className="grid grid-rows-6 gap-1 absolute top-0 left-0 bottom-0 right-0" role="grid">
         {guesses.map((row, rowIndex) => {
           const tiles = row.map((character, colIndex) =>
             renderTile(
@@ -84,7 +84,7 @@ const Board: React.FC = () => {
           </button>
         </div>
       </Dialog>
-    </>
+    </div>
   );
 };
 

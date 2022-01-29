@@ -1,0 +1,26 @@
+.board-container {
+  width: 80vmin;
+  padding-bottom: 80vmin;
+  max-width: 500px;
+}
+
+@media (min-width: 640) {
+  .board-container {
+    width: 50vmin;
+    padding-bottom: 55vmin;
+  }
+}
+
+@media (min-width: 768px) {
+  .board-container {
+    width: 50vmin;
+    padding-bottom: 60vmin;
+  }
+}
+
+@media (min-width: 1024px) {
+  .board-container {
+    max-width: 480px;
+    padding-bottom: 460px;
+  }
+}

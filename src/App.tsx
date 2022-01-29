@@ -57,12 +57,12 @@ function App() {
   }, [guesses, answer])
 
   return (
-    <div className="App max-w-screen-sm mx-auto grid">
+    <div className="App max-w-screen-sm mx-auto grid h-screen">
       <header>
         <h1 className="font-bold uppercase mt-5 text-4xl text-center font-semibold pb-2 select-none">Wordle</h1>
         <hr />
       </header>
-      <main className="grid grid-flow-row mt-4">
+      <main className="grid mt-4" style={{gridTemplateRows: '1fr auto'}}>
         <section className="flex flex-col items-center justify-center">
           <Board />
         </section>
