@@ -41,7 +41,7 @@ export function checkInWordList(row: MaybeLetter[]) {
 
 export function handleKeyPress(key: KeyType, guesses: MaybeLetter[][], curRowIndex: number, dispatch: Dispatch<any>, pressEnterCallback?: () => void) {
 	if (key === "backspace" || key === "⌫") {
-		dispatch({ type: "REMOVE_CHARACTER" });
+		dispatch({ type: "BACKSPACE" });
 	} else if (key === "enter") {
 		pressEnterCallback?.();
 	} else if (/^[a-z]{1}$/.test(key)) {
