@@ -8,6 +8,12 @@ main {
   grid-template-rows: 1fr auto auto;
 }
 
+@media screen and (prefers-color-scheme: dark) {
+  body {
+    background-color: #111;
+  }
+}
+
 @keyframes shake {
   10%,
   90% {

@@ -8,7 +8,7 @@ interface TileProps {
 
 const Tile: React.FC<TileProps> = ({ status, children }) => {
   const classes = classNames(
-    "border-2 inline-flex justify-center items-center text-xl sm:text-2xl md:text-3xl font-bold capitalize select-none",
+    "border-2 inline-flex justify-center items-center text-xl sm:text-2xl md:text-3xl font-bold capitalize select-none dark:text-white",
     {
       "bg-green-500 text-white": status === "correct",
       "bg-yellow-400 text-white": status === "include",
