@@ -5,7 +5,8 @@
 
 main {
   text-align: center;
-  grid-template-rows: 1fr auto auto;
+  grid-template-rows: 1fr auto;
+  padding-bottom: 2rem;
 }
 
 @media screen and (prefers-color-scheme: dark) {
