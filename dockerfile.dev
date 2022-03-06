@@ -1,0 +1,15 @@
+# pull official base image
+FROM node:14-alpine as build
+ENV NODE_PORT=3000
+# Add a work directory
+WORKDIR /app
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
+# install application dependencies
+COPY package*.json  /app/
+RUN yarn install
+# Copy app files
+COPY . /app/
+# Build the app
+CMD [ "yarn", "start" ]
+EXPOSE 3000

@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  sample:
+    container_name: sample
+    build:
+      context: .
+      dockerfile: dockerfile.dev
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    ports:
+      - 3000:3000
+    environment:
+      - CHOKIDAR_USEPOLLING=true # enables a polling mechanism via chokidar (which wraps fs.watch, fs.watchFile, and fsevents) so that hot-reloading will work.
