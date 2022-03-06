@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import GameContext from "./context/GameContext";
 import { Board } from "./components/board";
 import { Keyboard } from './components/keyboard';
-import Dialog from './components/Dialog';
+import { Dialog } from './components/dialog';
 import classNames from 'classnames';
 
 import "./App.css";
@@ -69,9 +69,8 @@ function App() {
         <section>
           <Keyboard />
         </section>
-        <Dialog open={dialogOpen} onClose={handleClose}>
+        <Dialog open={dialogOpen} onClose={handleClose} title={`You ${resultRef.current}!`}>
           <div data-testid="dialog" className="grid justify-center items-center">
-            <h1 className={dialogClasses}>{`You ${resultRef.current}!`}</h1>
             {resultRef.current === 'lost' && <p className='mt-3 text-center'>The answer is {answer}.</p>}
             <div className="flex gap-4 content-center" >
               <button
