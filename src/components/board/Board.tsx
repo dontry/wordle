@@ -3,13 +3,14 @@ import GameContext from '../../context/GameContext';
 import useKeyListener from '../../hooks/useKeyListener';
 import { checkFilled, checkInWordList, getKeyStatus, handleKeyPress } from '../../lib/utils';
 import { KeyStatus, KeyType } from '../../types';
-import Dialog from '../Dialog';
+import { Dialog } from '../dialog';
 import Tile from './Tile';
 import './board.css';
 
 const Board: React.FC = () => {
   const { answer, guesses, curRowIndex, latestFilledRowIndex, gameStatus, dispatch } = useContext(GameContext);
   const callbackRef = useRef((arg: any) => { })
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -34,6 +35,14 @@ const Board: React.FC = () => {
       )
     }
   }, [curRowIndex, guesses]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (buttonRef.current) {
+        buttonRef.current.focus();
+      }
+    }, 100);
+  }, [dialogOpen])
 
   useKeyListener(callbackRef);
 
@@ -74,12 +83,14 @@ const Board: React.FC = () => {
           );
         })}
       </div>
-      <Dialog open={dialogOpen} onClose={handleClose}>
+       <Dialog open={dialogOpen} onClose={handleClose} title="Not in the word list">
         <div className="grid justify-center">
-          <p className="text-xl font-semibold">Not in the word list</p>
           <button
+            tabIndex={-1}
             className="inline-flex justify-center content-center mt-5 mx-auto px-4 py-2 text-sm font-medium   border rounded-md hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400"
-            onClick={handleConfirm} >
+            onClick={handleConfirm}
+            ref={buttonRef}
+            >
             OK
           </button>
         </div>
