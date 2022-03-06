@@ -55,6 +55,18 @@ describe('GameProvider', () => {
         expect(newState.nextPos).toEqual([0, 3]);
       });
 
+      it('should do nothing when the current position is at the beginning of the row', () => {
+        const prevState = {
+          ...initialState,
+          nextPos: [0, 0],
+        }
+        const action: GameAction = {
+          type: 'BACKSPACE',
+        }
+        const newState = reducer(prevState, action);
+        expect(newState.nextPos).toEqual([0, 0]);
+      });
+
       it('should delete the last character and the nextPos stays same if the entire row is filled', () => {
         const prevGuesses = initializeGuesses();
         prevGuesses[0] = ['a', 'a', 'a', 'a', 'a'];

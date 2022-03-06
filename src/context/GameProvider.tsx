@@ -59,9 +59,11 @@ export const reducer: Reducer<GameState, GameAction> = (state: GameState, action
       let newNextPos = [...nextPos];
       if (!nextPosIsValid(nextPos) && newGuesses[nextPos[0]][4]) {
         newGuesses[nextPos[0]][4] = "";
-      } else {
-        newGuesses[nextPos[0]][nextPos[1] - 1] = "";
-        newNextPos = [nextPos[0], nextPos[1] - 1];
+      } else  {
+        const row = nextPos[0];
+        const col = nextPos[1] - 1 <= 0 ? 0 : nextPos[1] - 1;
+        newNextPos = [row, col];
+        newGuesses[row][col] = "";
       }
       return {
         ...state,
@@ -123,6 +125,7 @@ export const reducer: Reducer<GameState, GameAction> = (state: GameState, action
 function nextPosIsValid(nextPos: number[]) {
   return nextPos[1] + 1 < 5;
 }
+
 
 function checkGuess(guesses: MaybeLetter[][], answer: string) {
   return guesses.some((row) => {
